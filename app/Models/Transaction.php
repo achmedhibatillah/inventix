@@ -53,6 +53,7 @@ class Transaction extends Model
                 $q->whereBetween('transaction_start', [$startOfMonth, $endOfMonth])
                   ->orWhereBetween('transaction_end', [$startOfMonth, $endOfMonth]);
             })
+            ->whereNotIn('transaction_status', [2, 3])
             ->orderBy('created_at', 'desc')
             ->with(['user', 'inventarisd.inventaris.category']);
     

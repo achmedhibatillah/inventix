@@ -24,7 +24,7 @@ class InventarisResource extends JsonResource
                 $this->whenLoaded(relationship: 'category'),
             ),
             'summary' => $this->when(
-                condition: $this->count_tersedia,
+                condition: $this->count_tersedia !== 0 || $this->count_tiada !== 0 || $this->count_terpinjam !== 0,
                 value: [
                     'count_tersedia' => $this->count_tersedia,
                     'count_terpinjam' => $this->count_terpinjam,

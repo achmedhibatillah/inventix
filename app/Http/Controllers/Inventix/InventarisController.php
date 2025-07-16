@@ -54,7 +54,12 @@ class InventarisController extends Controller
             ->with(relations: 'category')
             ->with(relations: [
                 'inventarisd' => function ($query) use ($request): void {
-                    $query->orderBy('created_at')->with('kondisi');
+                    $query->orderBy('created_at')->with([
+                        'kondisi',
+                        'transactions' => function ($q) {
+                            $q->whereIn('transaction_status', [0,2]);
+                        }
+                    ]);
 
                     if ($request->filled(key: 'condition')) {
                         $query->where(column: 'kondisi_id', operator: $request->condition);

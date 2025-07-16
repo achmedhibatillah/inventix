@@ -14,6 +14,7 @@ import CreateTransactionForm from "./CreateTransactionForm";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import UpdateInventoryForm from "./UpdateInventoryForm";
+import CreateTransactionRequestForm from "./CreateTransactionRequestForm";
 
 export default function IventoryDetailPage({
     inventaris, condition_options, status_options, categories_options, user_options
@@ -35,6 +36,7 @@ export default function IventoryDetailPage({
     const [openDeleteInventoryDialog, setOpenDeleteInventoryDialog] = React.useState(false)
     const [openUpdateInventorySheet, setOpenUpdateInventorySheet] = React.useState(false)
     const [openCreateTransactionSheet, setOpenCreateTransactionSheet] = React.useState(false)
+    const [openCreateTransactionRequestSheet, setOpenCreateTransactionRequestSheet] = React.useState(false)
 
     // Data-State
     const inventory = inventaris?.data
@@ -139,7 +141,7 @@ export default function IventoryDetailPage({
                                 <th className="px-6 py-4 font-medium min-w-[250px]">Deksripsi</th>
                                 <th className="px-6 py-4 font-medium">Kondisi</th>
                                 <th className="px-6 py-4 font-medium">Status</th>
-                                {props.auth?.user_role !== 'guru' && <th className="px-6 py-4 text-right font-medium">Aksi</th>}
+                                <th className="px-6 py-4 text-right font-medium">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -192,6 +194,28 @@ export default function IventoryDetailPage({
                                                                 Pinjamkan
                                                             </Button>
                                                         }
+                                                    </div>
+                                                </td>
+                                            }
+                                            {
+                                                props?.auth?.user_role === 'guru' &&
+                                                <td className="px-6 py-4 text-right">
+                                                    <div className="flex justify-end gap-2">
+                                                            <Button
+                                                                disabled={unit?.action_status === 'menunggu' || unit?.action_status === 'tidak_tersedia'}
+                                                                size="sm"
+                                                                variant="primary"
+                                                                onClick={() => {
+                                                                    setSelectedUnit(unit)
+                                                                    setOpenCreateTransactionRequestSheet(true)
+                                                                }}
+                                                            >
+                                                                {unit?.action_status === 'menunggu'
+                                                                    ? 'Menunggu Konfirmasi'
+                                                                    : unit?.action_status === 'tidak_tersedia'
+                                                                    ? 'Ajukan'
+                                                                    : 'Ajukan'}
+                                                            </Button>
                                                     </div>
                                                 </td>
                                             }
@@ -259,6 +283,17 @@ export default function IventoryDetailPage({
                         trigger={(
                             <Button size="sm" variant="primary" className={'hidden'} onClick={() => setOpenCreateTransactionSheet(true)}>
                                 Pinjamkan
+                            </Button>
+                        )}
+                    />
+                    <CreateTransactionRequestRightSheet
+                        selectedUnit={selectedUnit}
+                        user={props?.auth}
+                        open={openCreateTransactionRequestSheet}
+                        onOpenChange={setOpenCreateTransactionRequestSheet}
+                        trigger={(
+                            <Button size="sm" variant="primary" className={'hidden'} onClick={() => setOpenCreateTransactionRequestSheet(true)}>
+                                Pinjam
                             </Button>
                         )}
                     />
@@ -497,6 +532,31 @@ function CreateTransactionRightSheet({
                     </SheetDescription>
                 </SheetHeader>
                 <CreateTransactionForm selectedUnit={selectedUnit} users={users} onClose={onOpenChange} />
+            </SheetContent>
+        </Sheet>
+    )
+}
+
+function CreateTransactionRequestRightSheet({
+    trigger,
+    user,
+    selectedUnit,
+    open,
+    onOpenChange
+}) {
+    return (
+        <Sheet open={open} onOpenChange={onOpenChange}>
+            <SheetTrigger asChild>
+                {trigger}
+            </SheetTrigger>
+            <SheetContent>
+                <SheetHeader>
+                    <SheetTitle>Buat Peminjaman</SheetTitle>
+                    <SheetDescription>
+                        Isi form dibawah ini untuk membuat data pengajuan peminjaman pada unit {selectedUnit?.code}
+                    </SheetDescription>
+                </SheetHeader>
+                <CreateTransactionRequestForm selectedUnit={selectedUnit} user={user} onClose={onOpenChange} />
             </SheetContent>
         </Sheet>
     )

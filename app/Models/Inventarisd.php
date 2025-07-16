@@ -41,4 +41,9 @@ class Inventarisd extends Model
     {
         return $this->belongsTo(Kondisi::class, 'kondisi_id', 'kondisi_id');
     }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'inventarisd_id');
+    }
 }

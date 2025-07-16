@@ -63,6 +63,11 @@ export default function TransactionPage({ transactions: rawTransactions, status_
                                 placeholder={'Cari status...'}
                                 value={selectedSt}
                             />
+                            <Button
+                                onClick={() => router.visit('transactions/request')}
+                            >
+                                Data Pengajuan
+                            </Button>
                         </div>
                     }
                 >

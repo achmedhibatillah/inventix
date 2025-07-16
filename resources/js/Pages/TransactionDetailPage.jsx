@@ -156,6 +156,8 @@ function renderStatus(status) {
     switch (status) {
         case 0: return 'Aktif';
         case 1: return 'Selesai';
+        case 2: return 'Menunggu Konfirmasi';
+        case 3: return 'Ditolak';
         default: return 'Tidak diketahui';
     }
 }

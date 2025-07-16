@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->string('transaction_desc', 500)->nullable();
             $table->date('transaction_start');
             $table->date('transaction_end');
-            $table->integer('transaction_status'); // 0: belum terkembalikan 1: terkembalikan
+            $table->integer('transaction_status'); // 0: belum terkembalikan (terima) 1: terkembalikan 2: pending 3: rejected (tolak)
             $table->uuid('user_id');
             $table->uuid('inventarisd_id');
             $table->timestamps();

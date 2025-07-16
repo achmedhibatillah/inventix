@@ -49,8 +49,12 @@ Route::prefix('users')->middleware([AuthMiddleware::class])->group(function () {
 
 Route::prefix('transactions')->middleware([AuthMiddleware::class])->group(function () {
     Route::get('/', [TransactionController::class, 'index']);
+    Route::get('/request', [TransactionController::class, 'indexRequest']);
     Route::post('/', [TransactionController::class, 'store']);
+    Route::post('/request', [TransactionController::class, 'storeRequest']);
     Route::post('/{id}/return', [TransactionController::class, 'returnTransaction']);
+    Route::post('/{id}/accept', [TransactionController::class, 'accept']);
+    Route::post('/{id}/reject', [TransactionController::class, 'reject']);
     Route::get('/{id}', [TransactionController::class, 'show']);
 });
 
@@ -67,7 +71,7 @@ Route::get('/dashboard', function () {
         $query->where('user_id', $userId);
     }
 
-    $total = (clone $query)->count();
+    $total = (clone $query)->whereIn('transaction_status', [0,1])->count();
     $dipinjam = (clone $query)->where('transaction_status', 0)->count();
     $terlambat = (clone $query)->where('transaction_status', 0)->where('transaction_end', '<', $now)->count();
 
@@ -77,6 +81,7 @@ Route::get('/dashboard', function () {
         ->when($role === 'guru', function ($query) use ($userId) {
             $query->where('user_id', $userId);
         })
+        ->whereIn('transaction_status', [0,1])
         ->orderBy('created_at', 'desc')
         ->take(5)
         ->get();
